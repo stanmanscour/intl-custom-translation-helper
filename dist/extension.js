@@ -33,30 +33,16 @@ exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(__webpack_require__(1));
 const path = __importStar(__webpack_require__(2));
 const fs = __importStar(__webpack_require__(3));
-const getApplicationFromEditor = (editor) => {
-    console.log("getApplicationFromEditor");
-    const documentPath = editor.document.uri.fsPath;
-    const dirName = path.dirname(documentPath);
-    const regex = /MD\.React\.[^/]+/;
-    const match = dirName.match(regex);
-    if (match) {
-        return match[0];
-    }
-};
-const getLanguagesByApp = (application) => {
-    if (application === "MD.React.Patient") {
-        return [
-            { key: "fr", flag: "🇫🇷" },
-            { key: "en", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
-            { key: "es", flag: "🇪🇸" },
-            { key: "pt", flag: "🇵🇹" },
-        ];
-    }
-    else {
-        return [{ key: "fr", flag: "🇫🇷" }];
-    }
-};
+const get_application_name_1 = __webpack_require__(4);
+const get_supported_languages_1 = __webpack_require__(5);
 let timeout = undefined;
+const decorationType = vscode.window.createTextEditorDecorationType({
+    after: {
+        margin: "0 0 0 1em",
+        textDecoration: "none",
+    },
+    rangeBehavior: vscode.DecorationRangeBehavior.OpenOpen,
+});
 function loadTranslations(editor, lang) {
     const documentPath = editor.document.uri.fsPath;
     const dirName = path.dirname(documentPath);
@@ -76,13 +62,6 @@ function loadTranslations(editor, lang) {
     }
     return translations;
 }
-const decorationType = vscode.window.createTextEditorDecorationType({
-    after: {
-        margin: "0 0 0 1em",
-        textDecoration: "none",
-    },
-    rangeBehavior: vscode.DecorationRangeBehavior.OpenOpen,
-});
 function triggerUpdateDecorations(editor) {
     if (timeout !== undefined) {
         clearTimeout(timeout);
@@ -114,11 +93,11 @@ function activate(context) {
 }
 exports.activate = activate;
 function applyDecorations(editor) {
-    const application = getApplicationFromEditor(editor);
+    const application = (0, get_application_name_1.getApplicationName)(editor);
     if (!application) {
         return;
     }
-    const languages = getLanguagesByApp(application);
+    const languages = (0, get_supported_languages_1.getSupportedLanguages)(application);
     const text = editor.document.getText();
     const regex = /<Translation\s+id=['"][^'"]*['"](?:\s[^>]*)?>/g;
     let matches;
@@ -171,6 +150,72 @@ module.exports = require("path");
 /***/ ((module) => {
 
 module.exports = require("fs");
+
+/***/ }),
+/* 4 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getApplicationName = void 0;
+const path = __importStar(__webpack_require__(2));
+const getApplicationName = (editor) => {
+    const documentPath = editor.document.uri.fsPath;
+    const dirName = path.dirname(documentPath);
+    const regex = /MD\.React\.[^/]+/;
+    const match = dirName.match(regex);
+    if (match) {
+        return match[0];
+    }
+};
+exports.getApplicationName = getApplicationName;
+
+
+/***/ }),
+/* 5 */
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getSupportedLanguages = void 0;
+const getSupportedLanguages = (application) => {
+    if (application === "MD.React.Patient") {
+        return [
+            { key: "fr", flag: "🇫🇷" },
+            { key: "en", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+            { key: "es", flag: "🇪🇸" },
+            { key: "pt", flag: "🇵🇹" },
+        ];
+    }
+    else {
+        return [{ key: "fr", flag: "🇫🇷" }];
+    }
+};
+exports.getSupportedLanguages = getSupportedLanguages;
+
 
 /***/ })
 /******/ 	]);

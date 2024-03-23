@@ -2,40 +2,20 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 
-type Lang = "fr" | "en" | "es" | "pt";
-type Application = "MD.React.Patient" | "MD.React.Medecin" | "MD.React.Admin";
+import { Lang } from "./types";
 
-const getApplicationFromEditor = (
-  editor: vscode.TextEditor
-): Application | undefined => {
-  console.log("getApplicationFromEditor");
-  const documentPath = editor.document.uri.fsPath;
-  const dirName = path.dirname(documentPath);
-
-  const regex = /MD\.React\.[^/]+/;
-  const match = dirName.match(regex);
-
-  if (match) {
-    return match[0] as Application;
-  }
-};
-
-const getLanguagesByApp = (
-  application: Application
-): { key: Lang; flag: any }[] => {
-  if (application === "MD.React.Patient") {
-    return [
-      { key: "fr", flag: "🇫🇷" },
-      { key: "en", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
-      { key: "es", flag: "🇪🇸" },
-      { key: "pt", flag: "🇵🇹" },
-    ];
-  } else {
-    return [{ key: "fr", flag: "🇫🇷" }];
-  }
-};
+import { getApplicationName } from "./get-application-name";
+import { getSupportedLanguages } from "./get-supported-languages";
 
 let timeout: NodeJS.Timeout | undefined = undefined;
+
+const decorationType = vscode.window.createTextEditorDecorationType({
+  after: {
+    margin: "0 0 0 1em",
+    textDecoration: "none",
+  },
+  rangeBehavior: vscode.DecorationRangeBehavior.OpenOpen,
+});
 
 function loadTranslations(
   editor: vscode.TextEditor,
@@ -68,14 +48,6 @@ function loadTranslations(
 
   return translations;
 }
-
-const decorationType = vscode.window.createTextEditorDecorationType({
-  after: {
-    margin: "0 0 0 1em",
-    textDecoration: "none",
-  },
-  rangeBehavior: vscode.DecorationRangeBehavior.OpenOpen,
-});
 
 function triggerUpdateDecorations(editor: vscode.TextEditor) {
   if (timeout !== undefined) {
@@ -123,13 +95,13 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function applyDecorations(editor: vscode.TextEditor) {
-  const application = getApplicationFromEditor(editor);
+  const application = getApplicationName(editor);
 
   if (!application) {
     return;
   }
 
-  const languages = getLanguagesByApp(application);
+  const languages = getSupportedLanguages(application);
 
   const text = editor.document.getText();
   const regex = /<Translation\s+id=['"][^'"]*['"](?:\s[^>]*)?>/g;
