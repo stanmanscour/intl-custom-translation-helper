@@ -1,6 +1,6 @@
 # Intl Custom Translation Helper
 
-Cette extension pour Visual Studio Code permet de voir en temps réel à quoi correspond une clé de traduction dans un composant <Translation /> qui n'est qu'un wrappper au dessus de <FormattedMessage>.
+Cette extension pour Visual Studio Code permet de voir en temps réel à quoi correspond une clé de traduction dans un composant `<Translation />` qui n'est qu'un wrappper au dessus de `<FormattedMessage>`.
 
 ## Fonctionnalités
 
@@ -12,7 +12,7 @@ Cette extension pour Visual Studio Code permet de voir en temps réel à quoi co
 
 1. Ouvrez **Visual Studio Code**.
 2. Allez dans **View > Extensions**.
-3. Cherchez "`IntlCustomTranslationHelper`" et cliquez sur **Install**.
+3. Cherchez "`intl-custom-translation-helper`" et cliquez sur **Install**.
 4. Redémarrez VSCode si nécessaire.
 
 ## Utilisation
